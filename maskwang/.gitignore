@@ -34,3 +34,5 @@ yarn-error.log*
 # history
 /.history
 
+#env
+.env
