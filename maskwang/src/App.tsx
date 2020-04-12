@@ -1,7 +1,7 @@
 import React from 'react';
 import Sample from "~/sample/Sample";
 import SampleStore from "~/sample/SampleStore";
-import Map from "~/sample/Map";
+import MapContainer from "~/component/container/MapContainer";
 import {Provider} from "mobx-react";
 
 const sampleStore = new SampleStore();
@@ -12,7 +12,7 @@ function App() {
           sampleStore = {sampleStore}
       >
         <Sample/>
-        <Map/>
+        <MapContainer/>
       </Provider>
   );
 }

@@ -6,7 +6,7 @@ declare global {
     }
 }
 
-class Map extends React.Component{
+class MapContainer extends React.Component{
 
     componentDidMount(): void {
         let container = document.getElementById('map');
@@ -27,4 +27,4 @@ class Map extends React.Component{
 
 }
 
-export default Map;
+export default MapContainer;
