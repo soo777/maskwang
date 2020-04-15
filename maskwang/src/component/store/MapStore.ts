@@ -8,8 +8,23 @@ class MapStore {
     }
 
     @observable
-    map:string ='';
+    level:number = 4;
 
+    @observable
+    lat:string = '';
+
+    @observable
+    lng:string = '';
+
+    @action
+    zoomIn(){
+        this.level = this.level - 1;
+    }
+
+    @action
+    zoomOut(){
+        this.level = this.level + 1;
+    }
 }
 
 export default MapStore;

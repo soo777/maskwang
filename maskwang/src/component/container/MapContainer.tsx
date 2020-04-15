@@ -1,4 +1,7 @@
 import React from 'react';
+import {inject, observer} from "mobx-react";
+import autoBind from "auto-bind";
+import MapStore from "~/component/store/MapStore";
 
 declare global {
     interface Window {
@@ -6,13 +9,24 @@ declare global {
     }
 }
 
-class MapContainer extends React.Component {
+interface Props{
+    mapStore?:MapStore;
+}
+
+@inject('mapStore')
+@observer
+class MapContainer extends React.Component<Props> {
+
+    constructor(props: any){
+        super(props);
+        autoBind(this);
+    }
 
     componentDidMount(): void {
         let container = document.getElementById('map');
         let options = {
             center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-            level: 4
+            level: this.props.mapStore?.level
         };
         let map = new window.kakao.maps.Map(container, options);
 
@@ -26,6 +40,9 @@ class MapContainer extends React.Component {
                     lon = position.coords.longitude;
 
                 let locPosition = new window.kakao.maps.LatLng(lat,lon), message = '<div style="padding:5px;">여기에 계신가요?!</div>';
+
+                console.log(lat);
+                console.log(lon);
 
                 this.displayMarker(map, locPosition, message);
             }))
@@ -54,6 +71,10 @@ class MapContainer extends React.Component {
         infowindow.open(map, marker);
 
         map.setCenter(locPosition);
+    }
+
+    zoomIn(){
+        // this.props.mapStore
     }
 
     render(){
