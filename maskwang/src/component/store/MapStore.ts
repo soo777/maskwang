@@ -17,6 +17,12 @@ class MapStore {
     lng:string = '';
 
     @action
+    zoonControl(level:any){
+        console.log('zoomcontrol');
+        this.level = level;
+    }
+
+    @action
     zoomIn(){
         this.level = this.level - 1;
     }

@@ -31,6 +31,22 @@ class MapContainer extends React.Component<Props> {
         let map = new window.kakao.maps.Map(container, options);
 
         this.getLocation(map);
+
+        let zoomControl = new window.kakao.maps.ZoomControl();
+        map.addControl(zoomControl, window.kakao.maps.ControlPosition.Right);
+
+        window.kakao.maps.event.addListener(map, 'zoom_changed', () => {
+
+            // 지도의 현재 레벨을 얻어옵니다
+            let level = map.getLevel();
+
+            this.zoomControl(level);
+            console.log(level);
+        });
+    }
+
+    zoomControl(level:number){
+        this.props.mapStore?.zoonControl(level);
     }
 
     getLocation(map:any) {
