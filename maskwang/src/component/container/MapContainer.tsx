@@ -30,23 +30,30 @@ class MapContainer extends React.Component<Props> {
         };
         let map = new window.kakao.maps.Map(container, options);
 
+        this.props.mapStore?.mapControl(map);
         this.getLocation(map);
 
         let zoomControl = new window.kakao.maps.ZoomControl();
         map.addControl(zoomControl, window.kakao.maps.ControlPosition.Right);
 
         window.kakao.maps.event.addListener(map, 'zoom_changed', () => {
-
-            // 지도의 현재 레벨을 얻어옵니다
             let level = map.getLevel();
 
             this.zoomControl(level);
-            console.log(level);
+            this.mapControl(map);
         });
+
+        window.kakao.maps.event.addListener(map, 'dragend', () => {
+            this.mapControl(map);
+        })
     }
 
     zoomControl(level:number){
-        this.props.mapStore?.zoonControl(level);
+        this.props.mapStore?.zoomControl(level);
+    }
+
+    mapControl(map:any){
+        this.props.mapStore?.mapControl(map);
     }
 
     getLocation(map:any) {
@@ -87,10 +94,6 @@ class MapContainer extends React.Component<Props> {
         infowindow.open(map, marker);
 
         map.setCenter(locPosition);
-    }
-
-    zoomIn(){
-        // this.props.mapStore
     }
 
     render(){

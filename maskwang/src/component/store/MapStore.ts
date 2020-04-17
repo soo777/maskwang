@@ -1,5 +1,6 @@
 import {action, observable} from 'mobx';
 import autoBind from 'auto-bind';
+import MapApi from "~/component/repository/MapApi";
 
 class MapStore {
 
@@ -8,7 +9,10 @@ class MapStore {
     }
 
     @observable
-    level:number = 4;
+    map:any;
+
+    @observable
+    level:number = 3;
 
     @observable
     lat:string = '';
@@ -17,20 +21,24 @@ class MapStore {
     lng:string = '';
 
     @action
-    zoonControl(level:any){
-        console.log('zoomcontrol');
+    mapControl(map:any){
+        this.map = map;
+        console.log(map.getLevel());
+        console.log(map.getCenter());
+
+        let lat = map.getCenter().getLat();
+        let lng = map.getCenter().getLng();
+
+        MapApi.findMask(lat, lng).then(data => {
+            console.log(data);
+        });
+    }
+
+    @action
+    zoomControl(level:any){
         this.level = level;
     }
 
-    @action
-    zoomIn(){
-        this.level = this.level - 1;
-    }
-
-    @action
-    zoomOut(){
-        this.level = this.level + 1;
-    }
 }
 
 export default MapStore;
