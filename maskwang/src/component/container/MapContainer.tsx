@@ -29,6 +29,7 @@ class MapContainer extends React.Component<Props> {
             level: this.props.mapStore?.level
         };
         let map = new window.kakao.maps.Map(container, options);
+        map.setMaxLevel(this.props.mapStore?.maxLevel);
 
         this.props.mapStore?.mapControl(map);
         this.getLocation(map);

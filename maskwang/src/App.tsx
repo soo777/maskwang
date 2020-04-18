@@ -14,7 +14,7 @@ function App() {
           sampleStore = {sampleStore}
           mapStore = {mapStore}
       >
-        <Sample/>
+        {/*<Sample/>*/}
         <MapContainer/>
       </Provider>
   );
