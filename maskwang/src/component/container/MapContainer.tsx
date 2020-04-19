@@ -65,8 +65,8 @@ class MapContainer extends React.Component<Props> {
 
                 let locPosition = new window.kakao.maps.LatLng(lat,lon), message = '<div style="padding:5px;">여기에 계신가요?!</div>';
 
-                console.log(lat);
-                console.log(lon);
+                // console.log(lat);
+                // console.log(lon);
 
                 this.displayMarker(map, locPosition, message);
             }))

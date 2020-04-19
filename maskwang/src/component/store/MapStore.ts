@@ -33,11 +33,12 @@ class MapStore {
         let lat = map.getCenter().getLat();
         let lng = map.getCenter().getLng();
         let m = this.getM(map);
+        m = Math.floor(m);
         console.log(m);
 
-        // MapApi.findMask(lat, lng).then(data => {
-        //     console.log(data);
-        // });
+        MapApi.findMask(lat, lng, m).then(data => {
+            console.log(data);
+        });
     }
 
     @action
@@ -46,20 +47,44 @@ class MapStore {
     }
 
     getM(map:any){
-        let proj = map.getProjection();
-
         let center = map.getCenter();
-        let level = map.getLevel();
+        let nw = map.getBounds().getNorthEast();
 
-        let centerPoint = proj.pointFromCoords(center);
+        let centerLat = center.getLat();
+        let centerLng = center.getLng();
+        let nwLat = nw.getLat();
+        let nwLng = nw.getLng();
 
-        let scale = 1 / Math.pow(2, level - 3);
+        // console.log(centerLat);
+        // console.log(nwLat);
+        // console.log(centerLng);
+        // console.log(nwLng);
 
-        let len = 25;
+        let m = this.distance(centerLat, centerLng, nwLat, nwLng);
 
-        let pixelForHalfLen = len / 2 * scale;
+        return m;
+    }
 
-        return pixelForHalfLen;
+    // 반경 계산
+    distance(centerLat:number, centerLng:number, nwLat:number, nwLng:number){
+        let theta = centerLng - nwLng;
+        let dist = Math.sin(this.deg2rad(centerLat)) * Math.sin(this.deg2rad(nwLat)) + Math.cos(this.deg2rad(centerLat)) * Math.cos(this.deg2rad(nwLat)) * Math.cos(this.deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = this.rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1609.344;           // meter로 계
+
+        // console.log(dist);
+
+        return dist;
+    }
+
+    deg2rad(deg:number) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    rad2deg(rad:number) {
+        return (rad * 180 / Math.PI);
     }
 
 }
