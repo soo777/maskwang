@@ -25,14 +25,15 @@ class MapContainer extends React.Component<Props> {
     componentDidMount(): void {
         let container = document.getElementById('map');
         let options = {
-            center: new window.kakao.maps.LatLng(33.450701, 126.570667),
+            // center: new window.kakao.maps.LatLng(33.450701, 126.570667),
+            center: new window.kakao.maps.LatLng(37.42131770668595, 126.99241963961045),
             level: this.props.mapStore?.level
         };
         let map = new window.kakao.maps.Map(container, options);
         map.setMaxLevel(this.props.mapStore?.maxLevel);
 
         this.props.mapStore?.mapControl(map);
-        this.getLocation(map);
+        // this.getLocation(map);
 
         let zoomControl = new window.kakao.maps.ZoomControl();
         map.addControl(zoomControl, window.kakao.maps.ControlPosition.Right);
@@ -100,7 +101,7 @@ class MapContainer extends React.Component<Props> {
     render(){
         return(
             <div>
-                <div id="map" style={{width:'100vw', height:'100vh'}}></div>;
+                <div id="map" style={{width:'100vw', height:'100vh'}}></div>
             </div>
         )
     }
