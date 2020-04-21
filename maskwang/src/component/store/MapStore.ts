@@ -30,7 +30,6 @@ class MapStore {
     mapControl(map:any){
         this.map = map;
 
-        let level = map.getLevel();
         let lat = map.getCenter().getLat();
         let lng = map.getCenter().getLng();
         let m = this.getM(map);
@@ -40,19 +39,18 @@ class MapStore {
             let stores = data.data.stores;
             // console.log(stores);
 
-            let positions: { 'title': string; 'latlng': any; 'remain_stat':string }[] = [];
+            let positions: { 'title': string; 'latlng': any; 'remain_stat':string; 'addr':string }[] = [];
 
             stores.forEach( (value: any, index: any, element: any) => {
                 if(value.remain_stat !== 'break') {
                     positions.push({
                         'title': value.name,
                         'latlng': new window.kakao.maps.LatLng(value.lat, value.lng),
-                        'remain_stat': value.remain_stat
+                        'remain_stat': value.remain_stat,
+                        'addr': value.addr
                     })
                 }
             });
-
-            console.log(positions);
 
             let imageSize = new window.kakao.maps.Size(35, 35);
 
@@ -65,6 +63,52 @@ class MapStore {
                     title : positions[i].title,
                     image : markerImage
                 });
+
+                // custom overlay
+               let content =    '<div style="width:200px">' +
+                                    '<div>' +
+                                        '<p>' + positions[i].title + '</p>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<p>' + '주소 : ' +  positions[i].addr + '</p>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<p>' + this.getMaskState(positions[i].remain_stat)+ '</p>' +
+                                    '</div>' +
+                                '</div>';
+
+                let position = new window.kakao.maps.LatLng(positions[i].latlng.getLat(), positions[i].latlng.getLng());
+
+                let customOverlay = new window.kakao.maps.CustomOverlay({
+                    // map: this.map,
+                    position: position,
+                    content : content,
+                    yAnchor: 1
+                });
+
+                // addr
+                // name
+                // remain_stat
+                // type01
+                // stock_at
+
+                // info window
+                // let infoWindow = new window.kakao.maps.InfoWindow({
+                //     content: '<div style="width:200px">' +
+                //                 '<div>' +
+                //                     '<p>' + positions[i].title + '</p>' +
+                //                 '</div>' +
+                //                 '<div>' +
+                //                 '<p>' + '주소 : ' +  positions[i].addr + '</p>' +
+                //                 '</div>' +
+                //                 '<div>' +
+                //                     '<p>' + this.getMaskState(positions[i].remain_stat)+ '</p>' +
+                //                 '</div>' +
+                //              '</div>'
+                // });
+
+                window.kakao.maps.event.addListener(marker, 'click', this.makeOverListener(map, marker, customOverlay));
+                // window.kakao.maps.event.addListener(marker, 'mouseout', this.makeOutListener(map, marker, customOverlay));
             }
         });
     }
@@ -120,6 +164,31 @@ class MapStore {
         return imageSrc;
     }
 
+    getMaskState(remain_stat:string){
+        let maskState;
+        switch (remain_stat) {
+            case 'plenty' : maskState = '재고 상태 : 100개 이상'; break;
+            case 'some' : maskState = '재고 상태 : 30~100개'; break;
+            case 'few' : maskState = '재고 상태 : 30개 미만'; break;
+            case 'empty' : maskState = '재고 상태 : 1개 이하'; break;
+            default : maskState = '판매 중지'; break;
+        }
+        return maskState;
+    }
+
+    makeOverListener(map:any, marker:any, infoWindow:any) {
+        return function() {
+            // infoWindow.open(map, marker);
+            infoWindow.setMap(map);
+        };
+    }
+
+    makeOutListener(map:any, marker:any, infoWindow:any) {
+        return function() {
+            // infoWindow.close();
+            infoWindow.setMap(null);
+        };
+    }
 }
 
 export default MapStore;
