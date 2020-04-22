@@ -107,8 +107,8 @@ class MapStore {
                 //              '</div>'
                 // });
 
-                window.kakao.maps.event.addListener(marker, 'click', this.makeOverListener(map, marker, customOverlay));
-                // window.kakao.maps.event.addListener(marker, 'mouseout', this.makeOutListener(map, marker, customOverlay));
+                window.kakao.maps.event.addListener(marker, 'mouseover', this.makeOverListener(map, marker, customOverlay));
+                window.kakao.maps.event.addListener(marker, 'mouseout', this.makeOutListener(map, marker, customOverlay));
             }
         });
     }
