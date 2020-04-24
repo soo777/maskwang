@@ -70,7 +70,7 @@ class MapStore {
                                         '<p>' + positions[i].title + '</p>' +
                                     '</div>' +
                                     '<div>' +
-                                        '<p>' + '주소 : ' +  positions[i].addr + '</p>' +
+                                        '<p> 주소 : ' +  positions[i].addr + '</p>' +
                                     '</div>' +
                                     '<div>' +
                                         '<p>' + this.getMaskState(positions[i].remain_stat)+ '</p>' +

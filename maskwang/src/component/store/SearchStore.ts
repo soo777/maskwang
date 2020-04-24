@@ -1,4 +1,3 @@
-import autoBind from 'auto-bind';
 import {action, observable} from 'mobx';
 
 class SearchStore{

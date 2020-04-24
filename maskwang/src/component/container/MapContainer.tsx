@@ -47,7 +47,8 @@ class MapContainer extends React.Component<Props> {
 
         window.kakao.maps.event.addListener(map, 'dragend', () => {
             this.mapControl(map);
-        })
+        });
+
     }
 
     zoomControl(level:number){
