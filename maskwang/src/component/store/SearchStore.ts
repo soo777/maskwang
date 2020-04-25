@@ -8,7 +8,6 @@ class SearchStore{
     @action
     handleInput(input:string){
         this.searchInput = input;
-        console.log(this.searchInput);
     }
 }
 
