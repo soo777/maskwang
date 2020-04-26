@@ -65,6 +65,8 @@ class SearchBoxContainer extends React.Component<Props>{
             ps.keywordSearch(input, (data:any, status:any, pagination:any) =>{
                 if (status === window.kakao.maps.services.Status.OK) {
 
+                    console.log(data);
+
                     // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
                     // LatLngBounds 객체에 좌표를 추가합니다
                     var bounds = new window.kakao.maps.LatLngBounds();
@@ -79,6 +81,101 @@ class SearchBoxContainer extends React.Component<Props>{
                 }
             });
         }
+
+        searchByKeywordAndShowList(){
+            let map = this.props.mapStore!.map;
+            let input = this.props.searchStore!.searchInput;
+
+            let ps = new window.kakao.maps.services.Places();
+
+            ps.keywordSearch(input, (data:any, status:any, pagination:any) =>{
+                if (status === window.kakao.maps.services.Status.OK) {
+
+                     console.log(data);
+
+                    // 정상적으로 검색이 완료됐으면
+                    // 검색 목록과 마커를 표출합니다
+                    // this.displayPlaces(data, map);
+
+                    // 페이지 번호를 표출합니다
+                    // displayPagination(pagination);
+
+                } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
+
+                    alert('검색 결과가 존재하지 않습니다.');
+                    return;
+
+                } else if (status === window.kakao.maps.services.Status.ERROR) {
+
+                    alert('검색 결과 중 오류가 발생했습니다.');
+                    return;
+
+                }
+            });
+        }
+
+    displayPlaces(places:any, map:any) {
+
+        let listEl = document.getElementById('placesList'),
+            menuEl = document.getElementById('menu_wrap'),
+            fragment = document.createDocumentFragment(),
+            bounds = new window.kakao.maps.LatLngBounds(),
+            listStr = '';
+
+        // 검색 결과 목록에 추가된 항목들을 제거합니다
+        // this.removeAllChildNods(listEl);
+
+        for ( let i=0; i<places.length; i++ ) {
+
+            // 마커를 생성하고 지도에 표시합니다
+            let placePosition = new window.kakao.maps.LatLng(places[i].y, places[i].x),
+                // marker = addMarker(placePosition, i),
+                itemEl = this.getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
+
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+            // LatLngBounds 객체에 좌표를 추가합니다
+            bounds.extend(placePosition);
+
+            fragment.appendChild(itemEl);
+        }
+
+        // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
+        listEl!.appendChild(fragment);
+        menuEl!.scrollTop = 0;
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds);
+    }
+
+    getListItem(index:number, places:any) {
+
+        let el = document.createElement('li'),
+            itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                '<div class="info">' +
+                '   <h5>' + places.place_name + '</h5>';
+
+        if (places.road_address_name) {
+            itemStr += '    <span>' + places.road_address_name + '</span>' +
+                '   <span class="jibun gray">' +  places.address_name  + '</span>';
+        } else {
+            itemStr += '    <span>' +  places.address_name  + '</span>';
+        }
+
+        itemStr += '  <span class="tel">' + places.phone  + '</span>' +
+            '</div>';
+
+        el.innerHTML = itemStr;
+        el.className = 'item';
+
+        return el;
+    }
+
+
+    removeAllChildNods(el:any) {
+        while (el.hasChildNodes()) {
+            el.removeChild (el.lastChild);
+        }
+    }
 
         render(){
             const searchDiv = {
@@ -100,6 +197,7 @@ class SearchBoxContainer extends React.Component<Props>{
                         <Input focus placeholder='Search...' onChange={this.handleChange} />
                         {/*<Button style={searchBtn} onClick={this.search}>Search</Button>*/}
                         <Button style={searchBtn} onClick={this.searchByKeyword}>Search</Button>
+                        {/*<Button style={searchBtn} onClick={this.searchByKeywordAndShowList}>Search</Button>*/}
                     </div>
                 </div>
             )
