@@ -39,7 +39,7 @@ class MapStore {
             let stores = data.data.stores;
             // console.log(stores);
 
-            let positions: { 'title': string; 'latlng': any; 'remain_stat':string; 'addr':string }[] = [];
+            let positions: { 'title': string; 'latlng': any; 'remain_stat':string; 'addr':string; 'stock_at':string }[] = [];
 
             stores.forEach( (value: any, index: any, element: any) => {
                 if(value.remain_stat !== 'break') {
@@ -47,16 +47,18 @@ class MapStore {
                         'title': value.name,
                         'latlng': new window.kakao.maps.LatLng(value.lat, value.lng),
                         'remain_stat': value.remain_stat,
-                        'addr': value.addr
+                        'addr': value.addr,
+                        'stock_at': value.stock_at
                     })
                 }
             });
 
             let imageSize = new window.kakao.maps.Size(35, 35);
+            let imageOption = {offset: new window.kakao.maps.Point(0, 0)};
 
             for (let i = 0; i < positions.length; i ++) {
                 let imageSrc = this.getMarkerImg(positions[i].remain_stat);
-                let markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+                let markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
                 let marker = new window.kakao.maps.Marker({
                     map: this.map,
                     position: positions[i].latlng,
@@ -65,15 +67,18 @@ class MapStore {
                 });
 
                 // custom overlay
-               let content =    '<div style="width:200px">' +
-                                    '<div>' +
+               let content =    '<div style="background:#333333; color:#d9d9d9; padding:10px; border-radius:10px">' +
+                                    '<div style="color:#ffffff; font-weight: bolder">' +
                                         '<p>' + positions[i].title + '</p>' +
                                     '</div>' +
-                                    '<div>' +
+                                    '<div style="font-size: small">' +
+                                    '<p>' + this.getMaskState(positions[i].remain_stat)+ '</p>' +
+                                    '</div>' +
+                                    '<div style="font-size: smaller">' +
                                         '<p> 주소 : ' +  positions[i].addr + '</p>' +
                                     '</div>' +
-                                    '<div>' +
-                                        '<p>' + this.getMaskState(positions[i].remain_stat)+ '</p>' +
+                                    '<div style="font-size: smaller">' +
+                                    '<p> 입고시간 : ' +  positions[i].stock_at + '</p>' +
                                     '</div>' +
                                 '</div>';
 
@@ -85,27 +90,6 @@ class MapStore {
                     content : content,
                     yAnchor: 1
                 });
-
-                // addr
-                // name
-                // remain_stat
-                // type01
-                // stock_at
-
-                // info window
-                // let infoWindow = new window.kakao.maps.InfoWindow({
-                //     content: '<div style="width:200px">' +
-                //                 '<div>' +
-                //                     '<p>' + positions[i].title + '</p>' +
-                //                 '</div>' +
-                //                 '<div>' +
-                //                 '<p>' + '주소 : ' +  positions[i].addr + '</p>' +
-                //                 '</div>' +
-                //                 '<div>' +
-                //                     '<p>' + this.getMaskState(positions[i].remain_stat)+ '</p>' +
-                //                 '</div>' +
-                //              '</div>'
-                // });
 
                 window.kakao.maps.event.addListener(marker, 'mouseover', this.makeOverListener(map, marker, customOverlay));
                 window.kakao.maps.event.addListener(marker, 'mouseout', this.makeOutListener(map, marker, customOverlay));
@@ -167,25 +151,23 @@ class MapStore {
     getMaskState(remain_stat:string){
         let maskState;
         switch (remain_stat) {
-            case 'plenty' : maskState = '재고 상태 : 100개 이상'; break;
-            case 'some' : maskState = '재고 상태 : 30~100개'; break;
-            case 'few' : maskState = '재고 상태 : 30개 미만'; break;
-            case 'empty' : maskState = '재고 상태 : 1개 이하'; break;
-            default : maskState = '판매 중지'; break;
+            case 'plenty' : maskState = '<span style="color:green">100개 이상</span>'; break;
+            case 'some' : maskState = '<span style="color:#f1ff71">30~100개</span>'; break;
+            case 'few' : maskState = '<span style="color:red">30개 미만</span>'; break;
+            case 'empty' : maskState = '<span style="color:grey">1개 이하</span>'; break;
+            default : maskState = '<span style="color:black">판매 중지</span>'; break;
         }
         return maskState;
     }
 
     makeOverListener(map:any, marker:any, infoWindow:any) {
         return function() {
-            // infoWindow.open(map, marker);
             infoWindow.setMap(map);
         };
     }
 
     makeOutListener(map:any, marker:any, infoWindow:any) {
         return function() {
-            // infoWindow.close();
             infoWindow.setMap(null);
         };
     }
