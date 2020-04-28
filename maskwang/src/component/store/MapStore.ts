@@ -26,8 +26,13 @@ class MapStore {
     @observable
     stores:string[][] = [];
 
+    @observable
+    loading:boolean = false;
+
     @action
     mapControl(map:any){
+        this.onLoading();
+
         this.map = map;
 
         let lat = map.getCenter().getLat();
@@ -170,6 +175,14 @@ class MapStore {
         return function() {
             infoWindow.setMap(null);
         };
+    }
+
+    onLoading(){
+        this.loading = true;
+
+        setTimeout(() => {
+            this.loading = false;
+        }, 500)
     }
 }
 

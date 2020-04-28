@@ -1,6 +1,6 @@
 import React from 'react';
 import {inject, observer} from "mobx-react";
-import {Button, Input} from "semantic-ui-react";
+import {Button, Dimmer, Icon, Input, Loader, Segment} from "semantic-ui-react";
 import SearchStore from "~/component/store/SearchStore";
 import MapStore from "~/component/store/MapStore";
 import autoBind from "auto-bind";
@@ -19,7 +19,7 @@ class SearchBoxContainer extends React.Component<Props>{
             autoBind(this);
         }
 
-        handleChange = (e:any) => {
+    handleChange = (e:any) => {
             this.props.searchStore!.handleInput(e.target.value);
         };
 
@@ -170,6 +170,11 @@ class SearchBoxContainer extends React.Component<Props>{
         return el;
     }
 
+    refresh(){
+        let map = this.props.mapStore!.map;
+
+        this.props.mapStore!.mapControl(map);
+    };
 
     removeAllChildNods(el:any) {
         while (el.hasChildNodes()) {
@@ -191,15 +196,50 @@ class SearchBoxContainer extends React.Component<Props>{
                 marginLeft: '10px'
             };
 
+            const title = {
+                position:'absolute' as 'absolute',
+                top:'17px',
+                left:'35px',
+                fontSize:'large',
+                fontWeight:'bold' as 'bold'
+            };
+
+            const refresh = {
+                position:'absolute' as 'absolute',
+                top:'20px',
+                right:'5px',
+                fontSize:'large'
+            };
+
+            const segment = {
+                padding: '0px'
+            };
+
+            const loading = this.props.mapStore?.loading;
+
             return(
-                <div style={searchDiv}>
-                    <div style={boxStyle}>
-                        <Input focus placeholder='Search...' onChange={this.handleChange} />
-                        {/*<Button style={searchBtn} onClick={this.search}>Search</Button>*/}
-                        <Button style={searchBtn} onClick={this.searchByKeyword}>Search</Button>
-                        {/*<Button style={searchBtn} onClick={this.searchByKeywordAndShowList}>Search</Button>*/}
+                <>
+                    <div style={searchDiv}>
+                        <span style={title}>Maskwang</span>
+                        <div style={boxStyle}>
+                            <Input focus placeholder='건물, 장소 입력' onChange={this.handleChange} />
+                            {/*<Button style={searchBtn} onClick={this.search}>Search</Button>*/}
+                            <Button style={searchBtn} onClick={this.searchByKeyword}>Search</Button>
+                            {/*<Button style={searchBtn} onClick={this.searchByKeywordAndShowList}>Search</Button>*/}
+                        </div>
+                        <span style={refresh} onClick={this.refresh}><Icon name='refresh'/></span>
                     </div>
-                </div>
+                    <div>
+                        <Segment style={segment}>
+                            <Dimmer
+                                active={loading}
+                                page={true}
+                                inverted={false}>
+                            <Loader content='Loading'/>
+                            </Dimmer>
+                        </Segment>
+                    </div>
+                </>
             )
     }
 
