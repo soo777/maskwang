@@ -103,6 +103,11 @@ class MapStore {
     }
 
     @action
+    setMap(map:any) {
+        this.map = map;
+    }
+
+    @action
     zoomControl(level:any){
         this.level = level;
     }
