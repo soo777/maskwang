@@ -28,32 +28,39 @@ class MapContainer extends React.Component<Props> {
     }
 
     componentDidMount(): void {
-        let container = document.getElementById('map');
-        let options = {
-            // center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-            center: new window.kakao.maps.LatLng(37.42131770668595, 126.99241963961045),
-            level: this.props.mapStore?.level
-        };
-        let map = new window.kakao.maps.Map(container, options);
-        map.setMaxLevel(this.props.mapStore?.maxLevel);
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition((position => {
+                let lat = position.coords.latitude;
+                let lon = position.coords.longitude;
 
-        this.props.mapStore?.mapControl(map);
-        // this.getLocation(map);
+                let container = document.getElementById('map');
+                let options = {
+                    // center: new window.kakao.maps.LatLng(33.450701, 126.570667),
+                    center: new window.kakao.maps.LatLng(lat, lon),
+                    level: this.props.mapStore?.level
+                };
+                let map = new window.kakao.maps.Map(container, options);
+                map.setMaxLevel(this.props.mapStore?.maxLevel);
 
-        let zoomControl = new window.kakao.maps.ZoomControl();
-        map.addControl(zoomControl, window.kakao.maps.ControlPosition.Right);
+                this.props.mapStore?.mapControl(map);
+                // this.getLocation(map);
 
-        window.kakao.maps.event.addListener(map, 'zoom_changed', () => {
-            let level = map.getLevel();
+                let zoomControl = new window.kakao.maps.ZoomControl();
+                map.addControl(zoomControl, window.kakao.maps.ControlPosition.Right);
 
-            this.zoomControl(level);
-            this.mapControl(map);
-        });
+                window.kakao.maps.event.addListener(map, 'zoom_changed', () => {
+                    let level = map.getLevel();
 
-        window.kakao.maps.event.addListener(map, 'dragend', () => {
-            this.mapControl(map);
-        });
+                    this.zoomControl(level);
+                    this.mapControl(map);
+                });
 
+                window.kakao.maps.event.addListener(map, 'dragend', () => {
+                    this.mapControl(map);
+                });
+
+            }));
+        }
     }
 
     zoomControl(level:number){
