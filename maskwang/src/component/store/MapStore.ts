@@ -71,6 +71,13 @@ class MapStore {
                     image : markerImage
                 });
 
+                let stock_time = '';
+                if(positions[i].stock_at !== null){
+                  stock_time = positions[i].stock_at;
+                } else {
+                  stock_time = ' 없음';
+                }
+
                 // custom overlay
                let content =    '<div style="background:#333333; color:#d9d9d9; padding:10px; border-radius:10px">' +
                                     '<div style="color:#ffffff; font-weight: bolder">' +
@@ -83,7 +90,8 @@ class MapStore {
                                         '<p> 주소 : ' +  positions[i].addr + '</p>' +
                                     '</div>' +
                                     '<div style="font-size: smaller">' +
-                                    '<p> 입고시간 : ' +  positions[i].stock_at + '</p>' +
+                                    // '<p> 입고시간 : ' +  positions[i].stock_at + '</p>' +
+                                    '<p> 입고시간 : ' + stock_time + '</p>' +
                                     '</div>' +
                                 '</div>';
 
