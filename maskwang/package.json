@@ -27,7 +27,7 @@
     "core-decorators": "^0.20.0",
     "customize-cra": "^0.9.1",
     "react-app-rewired": "^2.1.5",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "typescript": "~3.7.2"
   },
   "scripts": {
